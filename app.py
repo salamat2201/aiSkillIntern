@@ -4,16 +4,24 @@ import os
 import PyPDF2 as pdf
 from dotenv import load_dotenv
 import json
-from azureml.core import Run
+
+# Пытаемся импортировать azureml, но продолжаем работу, если это не удается
+try:
+    from azureml.core import Run
+    run = Run.get_context()
+    if run.id.startswith("OfflineRun"):
+        print("Running locally - ScriptRunContext not available")
+    else:
+        print("Running in Azure - ScriptRunContext is active")
+except ImportError:
+    print("AzureML not available - continuing without it")
+    run = None
 
 load_dotenv() ## load all our environment variables
 
-run = Run.get_context()
+genai.configure(api_key='AIzaSyCvJtoOUZ_XXyC2juqkx8UgD8P_C_-qt5I')
 
-if run.id.startswith("OfflineRun"):
-    print("Running locally - ScriptRunContext not available")
-else:
-    print("Running in Azure - ScriptRunContext is active")
+# Остальной код без изменений...
 
 genai.configure(api_key='AIzaSyCvJtoOUZ_XXyC2juqkx8UgD8P_C_-qt5I')
 
